@@ -4,11 +4,19 @@ import { useCreateTask } from "../hooks/tasks/useCreateTask";
 export const CreateTask = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const createTask = useCreateTask();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title.trim()) return;
+    console.log("click");
+
+    if (!title.trim() || !description) {
+      setErrorMessage("all fill is required"); // ✅ tell the user why
+      return;
+    }
+
+    setErrorMessage("");
 
     createTask.mutate(
       { title, description },
@@ -17,6 +25,12 @@ export const CreateTask = () => {
           setTitle("");
           setDescription("");
         },
+        onError: (error: any) => {
+          // ✅ add this
+          setErrorMessage(
+            error?.response?.data?.message || "Failed to create task",
+          );
+        },
       },
     );
   };
@@ -24,6 +38,12 @@ export const CreateTask = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Create Task</h2>
+      {/* ✅ Add this below the button */}
+      {errorMessage && (
+        <div className="rounded-md bg-red-50 p-4">
+          <p className="text-sm text-red-800">{errorMessage}</p>
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
           type="text"
@@ -48,11 +68,6 @@ export const CreateTask = () => {
         >
           {createTask.isPending ? "Creating..." : "Create Task"}
         </button>
-        {createTask.isError && (
-          <p className="text-red-600 text-sm">
-            Error: {createTask.error?.message || "Failed to create task"}
-          </p>
-        )}
       </form>
     </div>
   );

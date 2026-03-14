@@ -3,17 +3,29 @@ import { useLogin } from "../../hooks/auth/useLogin";
 import { useLocation } from "react-router-dom";
 
 const LoginPage = () => {
-  const login = useLogin({
-    onError: (error) => {
-      setErrorMessage(error?.response?.data?.message || "Login failed");
-    },
-  });
   const location = useLocation();
   const successMessage = location.state?.message;
-  // State for form inputs
+
+  // ✅ State first
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  // ✅ Hook after, now setErrorMessage is properly in scope
+  const login = useLogin({
+    onError: (error) => {
+      console.log("🔴 onError fired", error?.response?.data?.message);
+      setErrorMessage(error?.response?.data?.message || "Login failed");
+      console.log("🔴 setErrorMessage called");
+    },
+  });
+
+  console.log(
+    "🔄 render — errorMessage:",
+    errorMessage,
+    "isError:",
+    login.isError,
+  );
 
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,6 +35,9 @@ const LoginPage = () => {
       email: email,
       password: password,
     });
+
+    setEmail("");
+    setPassword("");
   };
 
   return (

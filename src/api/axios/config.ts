@@ -30,12 +30,13 @@ api.interceptors.response.use(
     // Don't try to refresh if we're on the login page!
 
     const originalRequest = error.config;
+    const isAuthRoute = originalRequest.url?.includes("/auth/");
 
     // If 401 and haven't already retried
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/api/auth/login")
+      !isAuthRoute
     ) {
       originalRequest._retry = true;
 
