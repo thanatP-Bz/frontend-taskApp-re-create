@@ -74,7 +74,7 @@ const LoginPage = () => {
             </div>
           )}
 
-          {/* ✅ Just get the message from backend */}
+          {/*  error */}
           {errorMessage && (
             <div className="rounded-md bg-red-50 p-4">
               <p className="text-sm text-red-800">{errorMessage}</p>
@@ -137,6 +137,17 @@ const LoginPage = () => {
               className="font-medium text-emerald-600 hover:text-emerald-500"
             >
               Sign up
+            </a>
+          </div>
+
+          {/* forget password link */}
+          <div className="text-center text-gray-600 text-sm mt-1">
+            for get password ?{" "}
+            <a
+              href="/forget-password"
+              className="text-sm text-emerald-600 hover:text-emerald-500 font-medium"
+            >
+              Click
             </a>
           </div>
         </form>

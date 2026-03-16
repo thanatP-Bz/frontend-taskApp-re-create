@@ -98,8 +98,14 @@ const EmailVerificationPage = () => {
               Email Verified!
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Your email has been successfully verified. Redirecting to login...
+              Your email has been successfully verified.
             </p>
+            <Link
+              to="/login"
+              className="w-full flex mt-6 justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+            >
+              Go to Login
+            </Link>
           </div>
         </div>
       </div>

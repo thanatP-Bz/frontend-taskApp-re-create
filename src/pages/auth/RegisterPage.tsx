@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRegister } from "../../hooks/auth/useRegister";
 import { useResendEmail } from "../../hooks/email/useResendEmail";
 
@@ -8,6 +8,14 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [showVerificationMessage, setShowVerificationMessage] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  // countdown timer
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+    return () => clearTimeout(timer); // cleanup
+  }, [cooldown]);
 
   const register = useRegister();
   const resendEmail = useResendEmail();
@@ -36,9 +44,20 @@ const RegisterPage = () => {
 
   //resend email
   const handleResendEmail = async () => {
+    //check user
     const userEmail = register.data?.user.email;
     if (!userEmail) return;
-    resendEmail.mutate(userEmail);
+
+    resendEmail.mutate(userEmail, {
+      onSuccess: () => {
+        setCooldown(60); // ✅ start 60 second cooldown
+      },
+      onError: (error: any) => {
+        setErrorMessage(
+          error?.response?.data?.message || "Resend email failed",
+        );
+      },
+    });
   };
 
   //verfication message
@@ -79,13 +98,33 @@ const RegisterPage = () => {
             </p>
           </div>
 
+          {/* ✅ Error message from resend */}
+          {errorMessage && (
+            <div className="rounded-md bg-red-50 p-4">
+              <p className="text-sm text-red-800">{errorMessage}</p>
+            </div>
+          )}
+
+          {/* ✅ Resend success message */}
+          {resendEmail.isSuccess && (
+            <div className="rounded-md bg-green-50 p-4">
+              <p className="text-sm text-green-800">
+                Email resent! Please check your inbox.
+              </p>
+            </div>
+          )}
+
           {/* Resend Button */}
           <button
             onClick={handleResendEmail}
-            disabled={resendEmail.isPending}
+            disabled={resendEmail.isPending || cooldown > 0}
             className="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors duration-200"
           >
-            {resendEmail.isPending ? "Sending..." : "Didn't get email? Resend"}
+            {resendEmail.isPending
+              ? "Sending..."
+              : cooldown > 0
+                ? `Resend in ${cooldown}s` // ✅ shows countdown
+                : "Didn't get email? Resend"}
           </button>
 
           {/* Back to login */}
@@ -109,6 +148,7 @@ const RegisterPage = () => {
             Sign Up to TaskApp
           </h2>
         </div>
+
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
           {/*  error message */}
           {errorMessage && (
@@ -184,12 +224,23 @@ const RegisterPage = () => {
         </form>
         {/* Register Link */}
         <div className="text-sm text-gray-600 text-center">
-          Don't have an account?{" "}
+          Already have and account{" "}
           <a
             href="/login"
             className="font-medium text-emerald-600 hover:text-emerald-500"
           >
             Login
+          </a>
+        </div>
+
+        {/* forget password link */}
+        <div className="text-center text-gray-600 text-sm mt-1">
+          forget password ?{" "}
+          <a
+            href="/forget-password"
+            className="text-sm text-emerald-600 hover:text-emerald-500 font-medium"
+          >
+            Click
           </a>
         </div>
       </div>

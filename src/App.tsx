@@ -4,6 +4,8 @@ import Dashboard from "./pages/task/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RegisterPage from "./pages/auth/RegisterPage";
 import EmailVerificationPage from "./pages/email/EmailVerificationPage";
+import ForgetPasswordPage from "./pages/password/ForgetPasswordPage";
+import ResetPasswordPage from "./pages/password/ResetPasswordPage";
 
 function App() {
   return (
@@ -12,6 +14,10 @@ function App() {
         {/* Auth */}
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+
+        {/* password */}
+        <Route path="/forget-password" element={<ForgetPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         {/* email verification */}
         <Route path="/verify-email" element={<EmailVerificationPage />} />
