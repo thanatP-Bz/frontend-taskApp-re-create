@@ -9,6 +9,13 @@ export const useLogin = (options?: { onError?: (error: any) => void }) => {
   return useMutation({
     mutationFn: loginApi,
     onSuccess: (data) => {
+      if (data.requires2FA) {
+        navigate("/verify-2fa", {
+          state: { userId: data.userId },
+        });
+        return;
+      }
+
       queryClient.invalidateQueries({ queryKey: ["user"] });
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);

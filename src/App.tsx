@@ -6,6 +6,11 @@ import RegisterPage from "./pages/auth/RegisterPage";
 import EmailVerificationPage from "./pages/email/EmailVerificationPage";
 import ForgetPasswordPage from "./pages/password/ForgetPasswordPage";
 import ResetPasswordPage from "./pages/password/ResetPasswordPage";
+import ChangePasswordPage from "./pages/password/ChangePasswordPage";
+import GoogleCallback from "./pages/auth/CallbackPage";
+import Setup2FAPage from "./pages/auth/2FASetupPage";
+import Verify2FAPage from "./pages/auth/Verify2FAPage";
+import SecurityPage from "./pages/auth/SecurityPage";
 
 function App() {
   return (
@@ -14,6 +19,8 @@ function App() {
         {/* Auth */}
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/verify-2fa" element={<Verify2FAPage />} />
+        <Route path="/oauth/callback" element={<GoogleCallback />} />
 
         {/* password */}
         <Route path="/forget-password" element={<ForgetPasswordPage />} />
@@ -26,6 +33,9 @@ function App() {
         {/* Tasks route */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/change-password" element={<ChangePasswordPage />} />
+          <Route path="/2fa/setup" element={<Setup2FAPage />} />
+          <Route path="/security" element={<SecurityPage />} />
         </Route>
 
         {/* Default: redirect to login */}

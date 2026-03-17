@@ -22,3 +22,13 @@ export const resetPasswordApi = async ({
   });
   return res.data;
 };
+
+//change password
+export const changePasswordApi = async (data: {
+  oldPassword: string;
+  newPassword: string;
+}): Promise<MessageResponse> => {
+  console.log("sending:", data);
+  const res = await api.patch("/auth/change-password", data);
+  return res.data;
+};

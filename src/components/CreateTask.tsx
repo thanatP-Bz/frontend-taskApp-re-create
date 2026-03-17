@@ -40,7 +40,7 @@ export const CreateTask = () => {
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Create Task</h2>
       {/* ✅ Add this below the button */}
       {errorMessage && (
-        <div className="rounded-md bg-red-50 p-4">
+        <div className="rounded-md bg-red-50 p-4 mb-4">
           <p className="text-sm text-red-800">{errorMessage}</p>
         </div>
       )}

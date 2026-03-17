@@ -26,6 +26,8 @@ export interface AuthResponse {
   refreshToken: string;
   sessionId: string;
   user: User; // ✅ No password here!
+  requires2FA?: boolean;
+  userId?: string;
 }
 
 export interface MessageResponse {
