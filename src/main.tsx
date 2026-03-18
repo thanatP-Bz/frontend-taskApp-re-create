@@ -17,7 +17,7 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <QueryClientProvider client={queryClient}>
-    <Toaster position="top-right" richColors />
+    <Toaster position="bottom-right" richColors />
     <App />
     <ReactQueryDevtools initialIsOpen={false} />
   </QueryClientProvider>,
