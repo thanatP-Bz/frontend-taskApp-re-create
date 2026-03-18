@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useResetPassword } from "../../hooks/passoword/useResetPassword";
+import { toast } from "sonner";
 
 const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
 
   const resetPassword = useResetPassword();
   const navigate = useNavigate();
@@ -16,22 +16,19 @@ const ResetPasswordPage = () => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      setErrorMessage("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     resetPassword.mutate(
       { token: token!, newPassword },
       {
-        onSuccess: () => {
-          navigate("/login", {
-            state: { message: "Password reset successful! Please log in." },
-          });
+        onSuccess: (data) => {
+          toast.success(data.message);
+          navigate("/login");
         },
         onError: (error: any) => {
-          setErrorMessage(
-            error?.response?.data?.message || "Something went wrong",
-          );
+          toast.error(error?.response?.data?.message || "Something went wrong");
         },
       },
     );
@@ -52,12 +49,6 @@ const ResetPasswordPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          {errorMessage && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{errorMessage}</p>
-            </div>
-          )}
-
           {/* New Password */}
           <div>
             <label

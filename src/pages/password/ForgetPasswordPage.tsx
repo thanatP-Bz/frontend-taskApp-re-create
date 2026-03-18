@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useForgetPassword } from "../../hooks/passoword/useForgetPassword";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const ForgetPasswordPage = () => {
   const [email, setEmail] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const forgetPassword = useForgetPassword();
@@ -17,9 +17,7 @@ const ForgetPasswordPage = () => {
         setShowSuccessMessage(true);
       },
       onError: (error: any) => {
-        setErrorMessage(
-          error?.response?.data?.message || "Something went wrong",
-        );
+        toast.error(error?.response?.data?.message || "Something went wrong");
       },
     });
   };
@@ -79,12 +77,6 @@ const ForgetPasswordPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          {errorMessage && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{errorMessage}</p>
-            </div>
-          )}
-
           <div>
             <label
               htmlFor="email"

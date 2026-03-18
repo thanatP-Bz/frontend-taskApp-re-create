@@ -3,6 +3,7 @@ import {
   MessageResponse,
   Verify2FASetupResponse,
 } from "../../types/2fa";
+import { AuthResponse } from "../../types/authResponse";
 import api from "../axios/config";
 
 // Enable 2FA - get QR code
@@ -23,7 +24,7 @@ export const verify2FASetupApi = async (
 export const verify2FALoginApi = async (data: {
   userId: string;
   token: string;
-}): Promise<any> => {
+}): Promise<AuthResponse> => {
   const res = await api.post("/2fa/verify-2fa-login", data);
   return res.data;
 };

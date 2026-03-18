@@ -2,12 +2,11 @@ import { useState } from "react";
 import { useDisable2FA } from "../../hooks/2fa/useDisable2FA";
 import { useRegenerateBackupCodes } from "../../hooks/2fa/useRegenerate2FA";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const SecurityPage = () => {
   const [disablePassword, setDisablePassword] = useState("");
   const [newBackupCodes, setNewBackupCodes] = useState<string[]>([]);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
 
   const disable2FA = useDisable2FA();
   const regenerateBackupCodes = useRegenerateBackupCodes();
@@ -17,42 +16,34 @@ const SecurityPage = () => {
     JSON.parse(localStorage.getItem("user") || "{}"),
   );
 
-  const clearMessages = () => {
-    setErrorMessage("");
-    setSuccessMessage("");
-  };
-
   const handleDisable2FA = () => {
     if (!disablePassword.trim()) {
-      setErrorMessage("Password is required");
+      toast.error("Password is required");
       return;
     }
-    clearMessages();
+
     disable2FA.mutate(disablePassword, {
       onSuccess: () => {
         const updatedUser = { ...user, twoFactorEnabled: false };
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setUser(updatedUser);
-        setSuccessMessage("2FA has been disabled successfully.");
+        toast.success("2FA has been disabled successfully.");
         setDisablePassword("");
       },
       onError: (error: any) => {
-        setErrorMessage(
-          error?.response?.data?.message || "Failed to disable 2FA",
-        );
+        toast.error(error?.response?.data?.message || "Failed to disable 2FA");
       },
     });
   };
 
   const handleRegenerateBackupCodes = () => {
-    clearMessages();
     regenerateBackupCodes.mutate(undefined, {
       onSuccess: (data) => {
         setNewBackupCodes(data.backupCodes);
-        setSuccessMessage("Backup codes regenerated successfully!");
+        toast.success("Backup codes regenerated successfully!");
       },
       onError: (error: any) => {
-        setErrorMessage(
+        toast.error(
           error?.response?.data?.message || "Failed to regenerate backup codes",
         );
       },
@@ -69,18 +60,6 @@ const SecurityPage = () => {
             Manage your account security settings.
           </p>
         </div>
-
-        {/* Status messages */}
-        {errorMessage && (
-          <div className="rounded-md bg-red-50 p-4">
-            <p className="text-sm text-red-800">{errorMessage}</p>
-          </div>
-        )}
-        {successMessage && (
-          <div className="rounded-md bg-green-50 p-4">
-            <p className="text-sm text-green-800">{successMessage}</p>
-          </div>
-        )}
 
         {/* 2FA Status Card */}
         <div className="bg-white rounded-lg shadow p-6">

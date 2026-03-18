@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const GoogleCallback = () => {
   const navigate = useNavigate();
@@ -9,9 +10,8 @@ const GoogleCallback = () => {
     const error = params.get("error"); // ✅ check for error first
 
     if (error) {
-      navigate("/login", {
-        state: { message: "Google login failed. Please try again." },
-      });
+      navigate("/login");
+      toast.error("Google login failed. Please try again.");
       return;
     }
 
@@ -27,11 +27,11 @@ const GoogleCallback = () => {
       if (user) {
         localStorage.setItem("user", decodeURIComponent(user));
       }
+      toast.success("Login successfully!");
       navigate("/dashboard");
     } else {
-      navigate("/login", {
-        state: { message: "Google login failed. Please try again." },
-      });
+      navigate("/login");
+      toast.error("Google login failed. Please try again.");
     }
   }, []);
 

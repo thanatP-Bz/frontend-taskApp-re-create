@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { loginApi } from "../../api/auth/authAPi";
+import { toast } from "sonner";
 
 export const useLogin = (options?: { onError?: (error: any) => void }) => {
   const queryClient = useQueryClient();
@@ -13,6 +14,7 @@ export const useLogin = (options?: { onError?: (error: any) => void }) => {
         navigate("/verify-2fa", {
           state: { userId: data.userId },
         });
+
         return;
       }
 
@@ -22,9 +24,9 @@ export const useLogin = (options?: { onError?: (error: any) => void }) => {
       localStorage.setItem("sessionId", data.sessionId);
       localStorage.setItem("user", JSON.stringify(data.user));
       navigate("/dashboard");
+      toast.success("Login successfully!");
     },
     onError: (error) => {
-      console.log("login error", error);
       options?.onError?.(error);
     },
     retry: false,

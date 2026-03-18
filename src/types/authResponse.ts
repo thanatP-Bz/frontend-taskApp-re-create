@@ -28,6 +28,7 @@ export interface AuthResponse {
   user: User; // ✅ No password here!
   requires2FA?: boolean;
   userId?: string;
+  message: string;
 }
 
 export interface MessageResponse {

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useVerify2FALogin } from "../../hooks/2fa/useVerify2FALogin";
+import { toast } from "sonner";
 
 const Verify2FAPage = () => {
   const [token, setToken] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const userId = location.state?.userId;
@@ -21,7 +21,7 @@ const Verify2FAPage = () => {
     e.preventDefault();
 
     if (!token.trim()) {
-      setErrorMessage("Please enter the 6 digit code");
+      toast.error("Please enter the 6 digit code");
       return;
     }
 
@@ -34,9 +34,10 @@ const Verify2FAPage = () => {
           localStorage.setItem("sessionId", data.sessionId);
           localStorage.setItem("user", JSON.stringify(data.user));
           navigate("/dashboard");
+          toast.success(data.message || "login Successfully!");
         },
         onError: (error: any) => {
-          setErrorMessage(error?.response?.data?.message || "Invalid code");
+          toast.error(error?.response?.data?.message || "Invalid code");
         },
       },
     );
@@ -71,12 +72,6 @@ const Verify2FAPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {errorMessage && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{errorMessage}</p>
-            </div>
-          )}
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Authentication Code
@@ -87,7 +82,6 @@ const Verify2FAPage = () => {
               value={token}
               onChange={(e) => {
                 setToken(e.target.value);
-                setErrorMessage("");
               }}
               className="w-full px-3 py-3 border border-gray-300 rounded-md text-center text-2xl tracking-widest focus:outline-none focus:ring-emerald-500 focus:border-emerald-500"
               placeholder="000000"

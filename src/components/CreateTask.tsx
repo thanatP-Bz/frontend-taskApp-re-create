@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useCreateTask } from "../hooks/tasks/useCreateTask";
+import { toast } from "sonner";
 
 export const CreateTask = () => {
   const [title, setTitle] = useState("");
@@ -12,7 +13,7 @@ export const CreateTask = () => {
     console.log("click");
 
     if (!title.trim() || !description) {
-      setErrorMessage("all fill is required"); // ✅ tell the user why
+      toast.error("all fill is required"); // ✅ tell the user why
       return;
     }
 
@@ -24,10 +25,11 @@ export const CreateTask = () => {
         onSuccess: () => {
           setTitle("");
           setDescription("");
+          toast.success("Task Created");
         },
         onError: (error: any) => {
           // ✅ add this
-          setErrorMessage(
+          toast.error(
             error?.response?.data?.message || "Failed to create task",
           );
         },

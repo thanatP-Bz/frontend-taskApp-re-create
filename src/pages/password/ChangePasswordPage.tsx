@@ -1,33 +1,33 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useChangePassword } from "../../hooks/passoword/useChangePassword";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const ChangePasswordPage = () => {
+  const navigate = useNavigate();
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
+
   const changePassword = useChangePassword();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      setErrorMessage("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
-
-    setErrorMessage("");
 
     changePassword.mutate(
       { oldPassword, newPassword },
       {
-        onSuccess: () => {},
+        onSuccess: (data) => {
+          toast.success(data.message);
+          navigate("/dashboard");
+        },
         onError: (error: any) => {
-          setErrorMessage(
-            error?.response?.data?.message || "Something went wrong",
-          );
+          toast.error(error?.response?.data?.message || "Something went wrong");
         },
       },
     );
@@ -46,12 +46,6 @@ const ChangePasswordPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          {errorMessage && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{errorMessage}</p>
-            </div>
-          )}
-
           {/* Old Password */}
           <div>
             <label

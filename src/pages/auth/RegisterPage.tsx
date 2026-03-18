@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useRegister } from "../../hooks/auth/useRegister";
 import { useResendEmail } from "../../hooks/email/useResendEmail";
+import { toast } from "sonner";
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [showVerificationMessage, setShowVerificationMessage] = useState(false);
   const [cooldown, setCooldown] = useState(0);
 
@@ -29,11 +29,10 @@ const RegisterPage = () => {
         onSuccess: () => {
           setShowVerificationMessage(true);
           // ✅ show the message
+          toast.success(register.data?.message || "register successfully!");
         },
         onError: (error: any) => {
-          setErrorMessage(
-            error?.response?.data?.message || "Registration failed",
-          );
+          toast.error(error?.response?.data?.message || "Registration failed");
         },
       },
     );
@@ -52,11 +51,10 @@ const RegisterPage = () => {
     resendEmail.mutate(userEmail, {
       onSuccess: () => {
         setCooldown(60); // ✅ start 60 second cooldown
+        toast.success("Email resent! Please check your inbox.");
       },
       onError: (error: any) => {
-        setErrorMessage(
-          error?.response?.data?.message || "Resend email failed",
-        );
+        toast.error(error?.response?.data?.message || "Resend email failed");
       },
     });
   };
@@ -99,22 +97,6 @@ const RegisterPage = () => {
             </p>
           </div>
 
-          {/* ✅ Error message from resend */}
-          {errorMessage && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{errorMessage}</p>
-            </div>
-          )}
-
-          {/* ✅ Resend success message */}
-          {resendEmail.isSuccess && (
-            <div className="rounded-md bg-green-50 p-4">
-              <p className="text-sm text-green-800">
-                Email resent! Please check your inbox.
-              </p>
-            </div>
-          )}
-
           {/* Resend Button */}
           <button
             onClick={handleResendEmail}
@@ -151,13 +133,6 @@ const RegisterPage = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          {/*  error message */}
-          {errorMessage && (
-            <div className="rounded-md bg-red-50 p-4">
-              <p className="text-sm text-red-800">{errorMessage}</p>
-            </div>
-          )}
-
           {/* Email input */}
           <div>
             <label
